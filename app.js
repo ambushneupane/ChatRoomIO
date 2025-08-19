@@ -10,25 +10,34 @@ const io= new Server(server);
 app.use(express.static(__dirname + '/public'))
 
 let onlineUsers={}
+let roomUsers={}
+
 
 io.on('connection',(socket)=>{
     
     socket.on('nickname',(nickname)=>{
         onlineUsers[socket.id]=nickname||'Guest';
-        io.emit('onlineUsers',Object.values(onlineUsers))
+    
     })  
 
     socket.on('joinRoom',(roomName)=>{
-        if (socket.currentRoom){
+        if(socket.currentRoom){
             socket.leave(socket.currentRoom);
-        }        
-        socket.join(roomName);
+            if(roomUsers[socket.currentRoom]){
+                delete roomUsers[socket.currentRoom][socket.id];
+                io.to(socket.currentRoom).emit('onlineUsers',Object.values(roomUsers[socket.currentRoom]))
+            }
+
+        }
+        socket.join(roomName)
         socket.currentRoom=roomName;
-    
+
+        if(!roomUsers[socket.currentRoom]) roomUsers[socket.currentRoom]={};
+        roomUsers[socket.currentRoom][socket.id]=onlineUsers[socket.id]|| "Guest"
+        io.to(roomName).emit('onlineUsers',Object.values(roomUsers[roomName]))
     })
 
     socket.on('chatMessage',(msg)=>{
-        console.log(socket.currentRoom)
         if (!socket.currentRoom) return;
         const payload={
             user:onlineUsers[socket.id] ||'Guest',
@@ -52,10 +61,14 @@ io.on('connection',(socket)=>{
 
     socket.on('disconnect',()=>{
         delete onlineUsers[socket.id];
-        io.emit('onlineUsers',Object.values(onlineUsers))
+        if (socket.currentRoom && roomUsers[socket.currentRoom]){
+            delete roomUsers[socket.currentRoom][socket.id];
+            io.to(socket.currentRoom).emit('onlineUsers',Object.values(roomUsers[socket.currentRoom]))
+        }
+       
+        
     })
-    // console.log("At last:",socket.currentRoom)
-
+  
 })
 
 
