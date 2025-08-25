@@ -67,9 +67,8 @@ io.on('connection',(socket)=>{
             isSystem: true
         };
 
-        roomMessages[roomName].push(joinMsg);
+        roomMessages[roomName]?.push(joinMsg);
 
-        // Send to all (including the new user)
         io.to(roomName).emit('chatMessage', joinMsg);
 
     })
@@ -105,12 +104,22 @@ io.on('connection',(socket)=>{
 
 
     socket.on('disconnect',()=>{
+        const username=onlineUsers[socket.id]||'Guest';
+         
+
         delete onlineUsers[socket.id];
         if (socket.currentRoom && roomUsers[socket.currentRoom]){
             
             delete roomUsers[socket.currentRoom][socket.id];
             io.to(socket.currentRoom).emit('onlineUsers',Object.values(roomUsers[socket.currentRoom]))
-        }
+            const leaveMsg={
+                user:username,
+                text:   `${username} has left the chat`,
+                time: new Date().toISOString(),
+                isSystem:true
+            }
+            io.to(socket.currentRoom).emit('chatMessage',leaveMsg)
+        };
       
         if (socket.currentRoom && roomUsers[socket.currentRoom] && Object.keys(roomUsers[socket.currentRoom]).length===0){
             //For memory management clearing everything
