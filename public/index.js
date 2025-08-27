@@ -12,7 +12,7 @@ const errorBox= document.getElementById('errorBox')
 
 socket.emit('nickname',nickname)
 
-let currentRoom="SSRF"
+let currentRoom="general"
 
 socket.emit('joinRoom',currentRoom)
 
