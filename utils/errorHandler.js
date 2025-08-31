@@ -8,10 +8,10 @@ function errorHandler(err,req,res,next){
     
     res.status(err.statusCode).json({
         success:false,
-        error:{
-            type:err.type,
-            message:err.message
-        }
+       
+        type:err.type,
+        message:err.message
+        
     });
 
 }

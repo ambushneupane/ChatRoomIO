@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            height: 100vh;
+            margin: 0;
+            background: white;
+            border-radius: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: none;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .room-controls {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        
+        select, button {
+            padding: 8px 12px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        .chat-area {
+            display: flex;
+            gap: 20px;
+            flex: 1;
+            min-height: 0;
+        }
+        
+        .messages-section {
+            flex: 9;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .users-section {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 4px;
+        }
+        
+        #messages li {
+            list-style: none;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        #online-users {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        #online-users li {
+            padding: 5px;
+            background: white;
+            margin: 2px 0;
+            border-radius: 3px;
+        }
+        
+        #form {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        
+        #input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        #typingIndicator {
+            font-style: italic;
+            color: #666;
+            min-height: 20px;
+            padding: 5px;
+            flex-shrink: 0;
+        }
+        
+        #errorBox {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+        
+        #errorBox:not(:empty) {
+            display: block;
+        }
+        
+        .users-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        
+        .users-toggle:hover {
+            background: #218838;
+        }
+        
+        /* Added logout button styling */
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 140px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        
+        .logout-btn:hover {
+            background: #c82333;
+        }
+        
+        .users-section.hidden {
+            display: none;
+        }
+        
+        .messages-section.full-width {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="chatContainer" style="display:none;">
+    <div class="container">
+        <h1>Simple Chat</h1>
+        
+        <button class="users-toggle" id="usersToggle"> Users</button>
+      
+        <button class="logout-btn" id="logoutBtn"> Logout</button>
+      
+        <div id="errorBox"></div>
+        
+        <div class="room-controls">
+            <label>Room: </label>
+            <select id="roomSelect">
+                <option value="general">General</option>
+                <option value="sports">Sports</option>
+                <option value="tech">Tech</option>
+            </select>
+            <button id="joinRoomBtn">Join Room</button>
+        </div>
+        
+        <div class="chat-area">
+            <div class="messages-section" id="messagesSection">
+                <ul id="messages"></ul>
+                <div id="typingIndicator"></div>
+                <form id="form">
+                    <input id="input" type="text" placeholder="Type a message..." autocomplete="off">
+                    <button type="submit">Send</button>
+                </form>
+            </div>
+            
+            <div class="users-section" id="usersSection">
+                <h3>Online Users</h3>
+                <ul id="online-users"></ul>
+
+            </div>
+
+        
+        </div>
+    </div>
+</div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./index.js"></script>
+   
+   
+</body>
+</html>

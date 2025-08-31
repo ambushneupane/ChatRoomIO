@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        /* Simplified CSS with minimal styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 300px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007cba;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #005a87;
+        }
+
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .error { background-color: #ffebee; color: #c62828; }
+        .success { background-color: #e8f5e8; color: #2e7d32; }
+
+        .link {
+            text-align: center;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sign Up</h1>
+        
+        <div id="message" class="message"></div>
+
+        <form id="signupForm">
+            <input type="text" id="username" placeholder="Username" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <button type="submit" id="signupBtn">Sign Up</button>
+        </form>
+
+        <div class="link">
+            <a href="login.html">Already have an account? Login</a>
+        </div>
+    </div>
+
+    <script>
+        /* Simplified JavaScript with basic functionality */
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            var username = document.getElementById('username').value;
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var btn = document.getElementById('signupBtn');
+            var message = document.getElementById('message');
+            
+            btn.disabled = true;
+            btn.textContent = 'Signing up...';
+            
+            fetch('/api/users/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username, email: email, password: password })
+            })
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+               
+                if (data.success) {
+                    message.className = 'message success';
+                    message.textContent = 'Account created! Redirecting to login...';
+                    message.style.display = 'block';
+                    setTimeout(function() { window.location.href = '/login.html'; }, 1500);
+                } else {
+                    message.className = 'message error';
+                    message.textContent = data.message || 'Registration failed';
+                    message.style.display = 'block';
+                }
+            })
+            .catch(function() {
+                message.className = 'message error';
+                message.textContent = 'Network error';
+                message.style.display = 'block';
+            })
+            .finally(function() {
+                btn.disabled = false;
+                btn.textContent = 'Sign Up';
+            });
+        });
+    </script>
+</body>
+</html>

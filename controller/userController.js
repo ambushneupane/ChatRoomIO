@@ -11,13 +11,14 @@ exports.registerUser=asyncWrapper(async(req,res,next)=>{
 
    const existing = await User.findOne({email})
    if(existing){
-    throw new AppError('User Already Exists with this email',400,"ValidationError");
+    throw new AppError('An account with this email already exists. Please log in or use a different email',409,"ConflictError");
 
    }
    const user=await User.create({username,email,password})
    
    res.status(201).json({
     success:true,
+    message:'Account Registered Successfully',
     data:{
         id:user._id,
         username:user.username,
