@@ -16,6 +16,9 @@ app.use(express.static(__dirname+'/public'))
 const socketModule=require('./socket')(io)
 app.use(express.json());
 //User Route
+app.get("/", (req, res) => {
+    res.redirect("/login.html")
+  })
 app.use('/api/users',userRoutes);
 
 
