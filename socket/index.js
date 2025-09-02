@@ -87,7 +87,6 @@ const handleJoinRoom = (socket, roomName) => {
     }
 
     roomUsers[roomName][socket.user.userId].sockets.add(socket.id);
-
    
     io.to(roomName).emit('onlineUsers', Object.values(roomUsers[roomName]).map(u => u.username));
 
@@ -102,8 +101,8 @@ const handleJoinRoom = (socket, roomName) => {
         socket.broadcast.to(roomName).emit('chatMessage', joinMsg);
     }
 
-    // Send chat history to this socket
     socket.emit('chatHistory', roomMessages[roomName] || []);
+   
 }
 
 
@@ -152,7 +151,10 @@ const handleDisconnect= (socket)=>{
 
             const leaveMsg= formatMessage('System',`${username} has left the chat...`,true)
             io.to(room).emit('chatMessage',leaveMsg)
+
+        
         }
+
         io.to(room).emit('onlineUsers',Object.values(roomUsers[room]||{}).map(u=>u.username));
     }
 }
