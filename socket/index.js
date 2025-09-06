@@ -120,12 +120,13 @@ const handleChatMessage=(socket,msg)=>{
 }
 
 const handleTyping=(socket)=>{
-    if(socket.currentRoom) socket.broadcast.to(socket.currentRoom).emit('typing',onlineUsers[socket.id])
+    
+    if(socket.currentRoom) socket.broadcast.to(socket.currentRoom).emit('typing',socket.user.username)
 }
 
 
 const handleStopTyping=(socket)=>{
-    if(socket.currentRoom) socket.broadcast.to(socket.currentRoom).emit('stopTyping',onlineUsers[socket.id]);
+    if(socket.currentRoom) socket.broadcast.to(socket.currentRoom).emit('stopTyping',onlineUsers[socket.user.userId]);
 }
 
 

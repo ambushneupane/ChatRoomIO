@@ -139,13 +139,14 @@ fetch('/api/users/verify-token',{
     });
 
     socket.on('chatHistory', function(chats) {
+      
         chats.forEach(function(chat) {
             appendMessage(chat);
         });
     });
 
     socket.on('typing', function(user) {
-        typingIndicator.textContent = user + ' is typing';
+        typingIndicator.textContent = user + ' is  typing';
     });
 
     socket.on('stopTyping', function() {
